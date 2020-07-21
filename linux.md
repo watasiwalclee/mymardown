@@ -170,12 +170,33 @@ root  tmp為練習用時較好的建立文件位置。
 
 <font color=#FF0000>chown 用戶 文件或目錄 </font> : (change file ownership)改變<font color=#FF0000>文件或目錄</font>所有者為<font color=#FF0000>用戶</font>
 
+<font color=#FF0000>**!! 只有root才能更改檔案所有者**</font>
+
 <font color=#FF0000>chgrp 用戶組 文件或目錄 </font> : (change file group ownership)改變<font color=#FF0000>文件或目錄</font>所屬組為<font color=#FF0000>用戶組</font>
 
 <font color=#00CACA>groupadd 用戶組</font> → 新增用戶組
 
 <font color=#FF0000>umask [-S]</font> : (the ueser file-creation mask)顯示、設置文件的預設權限。
 
-touch建立的是文件，是沒有可執行權限的
+<font color=#FF0000>**touch建立的文件，是沒有可執行權限的**</font>
 
-umask回傳的數字 : 
+umask回傳的數字 : 0022
+0(特殊權限) 022數於正常權限(ugo) → 解讀方式為777-022=755
+而755才是我們所熟悉的ugo權限(rwxr-xr-x)
+
+## 設置預設權限:
+1. 先將權限數字設定好
+2. 再拿<font color=#FF0000>777</font>將權限數字做扣除
+3. 輸入<font color=#FF0000>umask 扣除後數字</font>即可
+
+總結:
+1. 只有檔案所有者及root可以更改文件權限
+2. 只有root可以更改文件所有者
+
+
+
+
+
+
+
+
