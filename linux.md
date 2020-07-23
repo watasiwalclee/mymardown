@@ -107,7 +107,7 @@ root  tmp為練習用時較好的建立文件位置。
 <font color=#FF7575>**!!! linux並沒有資源回收桶的概念，刪除就刪除了!!**</font> 
 
 
-# <font color=#FFD700>文件處理命令</font>
+# <font color=#FFD700>4.1 文件處理命令</font>
 
 <font color=#FF0000>touch [文件名, …]</font> : 建立空文件，若需要空格作為檔案名稱，則需要使用雙引號包起來
 
@@ -129,7 +129,7 @@ root  tmp為練習用時較好的建立文件位置。
 
 <font color=#FF0000>/var/log/message</font> 是日誌功能，可以拿來作練習用。
 
-# <font color=#FFD700>連接命令</font>
+<font color=#FFD700>連接命令</font>\
 <font color=#FF0000>ln -s 原文件 目標文件</font> : (link)生成連接文件
 * -s 建立軟捷徑
 
@@ -144,7 +144,7 @@ root  tmp為練習用時較好的建立文件位置。
 
 <font color=#FF0000>**!!硬連接不能跨其他硬碟分區。不能針對目錄使用。**</font>
 
-# <font color=#FFD700>權限管理命令</font>
+# <font color=#FFD700>4.2 權限管理命令</font>
 <font color=#FF0000>chmod {ugoa} {+-=} {rwx} 文件或目錄 </font> : 
 (change the permissions mode of a file) 改變文件或目錄權限
 * -R 遞迴更改，經過路徑的所有檔案都更改成該權限
@@ -184,19 +184,138 @@ umask回傳的數字 : 0022
 0(特殊權限) 022數於正常權限(ugo) → 解讀方式為777-022=755
 而755才是我們所熟悉的ugo權限(rwxr-xr-x)
 
-## 設置預設權限:
+設置預設權限:
 1. 先將權限數字設定好
 2. 再拿<font color=#FF0000>777</font>將權限數字做扣除
 3. 輸入<font color=#FF0000>umask 扣除後數字</font>即可
 
 總結:
-1. 只有檔案所有者及root可以更改文件權限
-2. 只有root可以更改文件所有者
+1. **只有檔案所有者及root可以更改文件權限(chmod)**
+2. **只有root可以更改文件所有者(chown)**
 
+# <font color=#FFD700>4.3 文件搜索命令</font>
 
+**!!盡量少用搜索，會盡量大量的系統資源**
 
+<font color=#FF0000>find [搜索範圍] [條件]</font> : 文件搜索
+* -name 檔名 : 搜尋檔名(完全符合才會被找出來)，如果想要進行包含檔名，則使用<font color=#FF0000>通用字符*及?</font>進行搜索(\*init\*)，大小寫嚴格區分
+* -iname 檔名 : 搜尋檔名，不區分大小寫。
+* -size (+-)大小(0.5kb) : 
+  * +大小:大於  -大小:小於  大小:等於
+  * 1格是0.5kb
+* -user 用戶名 : 根據所有者做搜尋
+* -group 組別 : 根據所有組做搜尋
+* -cmin -n : 搜尋最近n分鐘內被修改過屬性的文件
+    * -n n分鐘之內 +n 超過n分鐘 n等於5分鐘
+    * -amin : 訪問時間(access)
+    * -cmin : 文件屬性(change)
+    * -mmin : 文件內容(modify)
+    * -exec/-ok 命令 {}\; : 搜尋完之後執行命令
+        * {}\;對搜尋結果進行操作
+        * -ok會逐一詢問
+    * -type : 根據文件類型搜尋
+        * f文件  d目錄  l連結文件
+    * -inum : 根據i節點搜尋
+    * 綜合條件
+        * -a 兩個條件同時滿足
+        * -o 條件任一滿足
+ex. find path -size -2048000 -a +1024000
 
+<font color=#FF0000>whereis 指令或配置文件</font> : 搜尋命令的簡短訊息
+* -b : 只找可執行檔(二進位)格式的檔案
+* -m : 只找在說明檔 manual 路徑下的檔案
+* -s : 只找source來源檔案
+* -u : 搜尋不再上述三個選項的其他特殊檔案
+* **不加選項則會全部列出**
 
+<font color=#FF0000>which 指令</font> : 會根據<font color=#FF0000>"PATH"</font>這個環境變數去搜尋"執行檔"的檔名，而且which後面接的是<font color=#FF0000>"完整檔名"</font>。若加上-a，可以列出所有能找到的同名執行檔，而非第一個
+* -a : 將所有由PATH目錄中可以找到得指令都列出來
 
+比較:\
+whereis 和locate是利用資料庫來搜尋資料，而非搜尋硬碟。此在找資料的速度相當快速，真的找不到才會動用find。
+* which 找<font color=#FF0000>執行檔</font>
+* whereis 找<font color=#FF0000>特定檔案</font>
+* find以<font color=#FF0000>整個硬碟的資料</font>為主來做搜尋
 
+# <font color=#FFD700>4.4 幫助命令</font>
 
+<font color=#FF0000>man [幫助編號] 指令或配置文件</font> : (manual)搜尋目標的配置訊息。
+* / 用來搜尋字元
+* 查詢配置文件只要輸入檔名就好，否則會得到文件內容
+* 尋找配置格式
+* man後面的編號:<font color=#FF0000>1</font>代表命令的幫助，<font color=#FF0000>5</font>代表配置文件的幫助，數字越小優先權越高
+
+<font color=#FF0000>whatis 命令</font> : 查詢指令的簡短訊息
+
+<font color=#FF0000>apropos 配置文件</font> : 查詢配置文件的簡短訊息
+
+如果只是想查看命令選項，則在指令的後方輸入<font color=#FF0000>"--help"</font>，就會跳出指令的所有選項
+
+<font color=#FF0000>date</font> : 查詢及更改時間。
+
+<font color=#FF0000>info</font> : 也是一種幫助命令
+
+<font color=#FF0000>help 命令</font> : 獲得shell內置命令的幫助訊息。(判斷是否為內置命令→找不到命令檔案，無法使用man來獲取訊息)
+
+# <font color=#FFD700>4.5 用戶管理命令</font>
+
+<font color=#FF0000>useradd 用戶名稱</font> : 增加新用戶(路徑:/usr/sbin/useradd)
+
+<font color=#FF0000>passwd 用戶名稱</font> : 為用戶設置密碼(路徑:/usr/bin/passwd)
+* __**root不會受限於密碼過於簡單的限制，但一般使用者會。**__
+* root帳號可以該改其他用戶的密碼，但一般使用者只能改變自己的。
+
+<font color=#FF0000>who</font> : 查看登陸用戶訊息(路徑:/usr/bin/who)
+* 格式 : <font color=#FF0000>用戶名 登陸終端 登陸時間 登陸地址</font>
+    * tty : 本機登陸
+    * pts/終端 : 遠端登陸
+
+<font color=#FF0000>w</font> : 查看登陸用戶詳細訊息(路徑:/usr/bin/w)
+* 格式
+    * USR : 帳號名稱
+    * TTY : 登入模式
+    * FROM : 當路地址
+    * LOGIN : 登陸時間
+    * IDLE : 閒置時間
+    * JCPU : 累積占用CPU時間
+    * PCPU : 占用CPU持間
+    * WHAT : 當前操作
+
+<font color=#00FFFF>uptime</font> : 查看運行狀態
+* 格式: 登陸時間  up  以運行時間  登錄人數 load: 5分鐘  10分鐘  15分鐘的平均負載
+
+# <font color=#FFD700>4.6 壓縮及解壓縮</font>
+
+壓縮格式:
+* .gz
+* .tar
+* .zip
+* .bz2
+
+<font color=#FF0000>gzip 文件</font> : (GNU zip)壓縮文件(命令路徑:/bin/gzip)
+* __**無法壓縮資料夾**__
+* 壓縮完畢後，原檔案會被刪除
+
+<font color=#FF0000>gunzip 壓縮文件</font> : (GNU zip)解壓縮文件(命令路徑:/bin/gunzip)
+
+<font color=#FF0000>tar 選項 打包後文件名 目錄</font> : 打包資料夾(命令路徑:/bin/tar)
+* -c/x 打包/解包
+* -v 顯示詳細訊息
+* -f 指定文件名
+* -z 打包同時壓縮(解包同時解壓縮) : 此時打包後文件名變成打包及壓縮後文件名
+* -j 打包成bzip2文件(-cjf→壓縮  -xjf→解壓縮)
+
+<font color=#FF0000>zip 選項 壓縮後文件名 文件或目錄</font> : 壓縮文件或目錄(命令路徑:/usr/bin/zip)
+* -r 壓縮資料夾
+* 能保留原文件
+
+__**!!linux的壓縮檔在windows系統下大多都能解壓縮，但windows壓縮檔不見得能被linux解壓縮**__
+
+<font color=#FF0000>unzip 壓縮文件名</font> : 解壓縮zip文件或目錄(命令路徑:/usr/bin/unzip)
+
+<font color=#FF0000>bzip2 選項 文件</font> : 壓縮文件(命令路徑:/usr/bin/bzip2)
+* -k 產生壓縮文件後並保留原文件
+* 壓縮檔案比較大的檔案使用效果較佳
+
+<font color=#FF0000>bunzip2 選項 文件</font> : 解壓縮bzip2文件(命令路徑:/usr/bin/bunzip2)
+* -k 解壓縮後保留原文件
