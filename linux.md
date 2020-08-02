@@ -81,7 +81,7 @@ root  tmp為練習用時較好的建立文件位置。
 權限類型 : <font color=#FF0000>r</font> 讀取，<font color=#FF0000>w</font> 寫入，<font color=#FF0000>x</font> 執行\
 執行權限為程式或腳本才會有
 
-# <font color=#FFD700>目錄處理命令</font> 
+# <font color=#FFD700>4 目錄處理命令</font> 
 創建資料夾\
 <font color=#FF0000>mkdir 資料夾名稱</font> : (make directories)建立資料夾，可同時建立多個，以空格作為分隔
 * -p 遞迴創建: (parents)如果沒有目標路徑沒有指定資料夾，則會自動創建
@@ -111,7 +111,7 @@ root  tmp為練習用時較好的建立文件位置。
 
 <font color=#FF0000>touch [文件名, …]</font> : 建立空文件，若需要空格作為檔案名稱，則需要使用雙引號包起來
 
-<font color=#FF0000>cat [文件名]</font> : 瀏覽文件，不適合瀏覽
+<font color=#FF0000>cat [文件名]</font> : 瀏覽文件，不適合瀏覽太長的文件
 * -n 顯示行號
 
 <font color=#FF0000>tac [文件名]</font> : 反向顯示文件內容
@@ -319,3 +319,113 @@ __**!!linux的壓縮檔在windows系統下大多都能解壓縮，但windows壓�
 
 <font color=#FF0000>bunzip2 選項 文件</font> : 解壓縮bzip2文件(命令路徑:/usr/bin/bunzip2)
 * -k 解壓縮後保留原文件
+
+
+| 壓縮格式 | 預設留下原檔案 | 
+| -------- | -------- | 
+|tar 單純將資料打包成文件|是|
+|gz 壓縮gz格式|否|
+|zip 壓縮zip格式|是|
+|bzip 壓縮bz2格式|否|
+
+!!**除了zip格式之外，其餘壓縮格式皆為預設刪除原文件**
+
+
+# <font color=#FFD700>4.7 網路命令</font>
+
+<font color=#FF0000>write 用戶名</font> : 傳送訊息給該用戶(命令路徑:/usr/bin/write)，執行權限為所有帳號，且發送訊息必須在線上
+* ctrl+D 為傳送訊息
+
+<font color=#FF0000>wall 訊息</font> : (write all)隊所有帳號發送訊息(命令路徑:/usr/bin/wall)
+
+<font color=#FF0000>ping 選項 IP地址</font> : 測試網路連通性(/bin/ping)
+* -c 指定發送次數
+
+<font color=#FF0000>ifconfig 網卡名稱 IP地址</font> : (interface configure)查看和設置網卡訊息(命令路徑:/sbin/ifconfig)
+* lo 本機網卡
+* link encap 網路型態
+* inet addr IP地址
+* Bcast 廣播位置
+* Mask 
+* RX packets 接收封包數量
+* TX packets 發送封包數量
+* RX bytes 接收封包大小
+* TX bytes 發送封包大小
+
+<font color=#FF0000>mail 用戶名稱</font> : 查看發送電子郵件(命令路徑:/bin/mail)
+* ctrl+D 輸入結束
+* 使用help查看指令訊息
+* 想看哪封信直接輸入序號即可
+* h 呼叫信件清單
+* d 編號 : 刪除郵件
+
+<font color=#FF0000>last</font> : 列出目前與過去登入系統的帳號訊息(命令路徑:usr/bin/last)
+
+<font color=#FF0000>lastlog</font> : 列出特定帳戶最後一次登入訊息(命令路徑:usr/bin/lastlog)
+* <font color=#0072E3>-u 帳戶UID</font>可以查詢指定帳戶最後一次登陸訊息
+
+~~<font color=#FF0000>traceroute</font> : 顯示封包的主機間的路徑(命令路徑:bin/traceroute)~~ centos7已移除
+
+<font color=#FF0000>netstat 選項</font> : 顯示網路相關訊息
+* 可以透過該指令查看目前已啟動的服務
+* 選項
+  * -t TCP協議
+  * -u UDP協議
+  * -l 監聽
+  * -r 路由
+  * -n 顯示IP地址和連接埠
+  * -a 全部
+* 常用
+  * -tlun 查看所有監聽接口
+  * -an 查看本機所有網路連接
+  * -rn 查看本機路由表
+* state
+  * listen 監聽狀態
+  * established 透過遠端連接
+
+<font color=#FF0000>setup</font> : 進入網路配置介面(命令路徑:/usr/bin/setup)
+* 使用DBCP [\*] → 等同於windows設定網路的自動獲取
+* 設定完畢後輸入<font color=#4F9D9D>service network restart</font>將網路服務重新啟動，設置將會生效
+
+<font color=#FF0000>mount [-t 文件系統]</font> [鳥哥](http://linux.vbird.org/linux_basic/0230filesystem.php) : 設置文件名 掛載點(命令路徑:/usr/bin/mount)
+* ios9660
+* /dev/sr0 為系統默認設備名稱
+
+<font color=#FF0000>umount 文件系統</font> : 卸載
+* 執行卸載時不能再掛載路徑裡
+
+# <font color=#FFD700>4.8 關機重啟命令</font>
+
+<font color=#FF0000>shutdown [選項] 時間</font> : 關機
+* -h 指定時間關機
+* -r 重新開啟
+* -c 取消前一個關機指令
+* 時間格式
+  * **now** 立刻關機
+  * **時間格式** 20:30  晚上8點半關機
+  * **數字**  幾分鐘後關機
+
+其餘關機命令
+* half
+* poweroff
+* init 0
+
+其餘重啟命令
+* reboot
+* init 6
+
+系統運行級別
+* 0 關機
+* 1 單用戶 → 類似安全模式，無圖形介面
+* 2 不完全多用戶，不含NFS(網路文件系統)服務 無圖形介面
+* 3 完全多用戶  無圖形介面
+* 4 未分配
+* 5 圖形介面(X11)  X 通常只圖形介面
+* 6 重啟
+
+**/etc/inittab** 為init配置文件\
+最後的<font color=#4F9D9D>id:<font color=#FF0000>3</font>:inidefault:</font>，3為默認級別(也就是init會直接觸發級別3)
+
+<font color=#FF0000>runlevel</font> : 查詢系統運行級別
+
+<font color=#FF0000>logout</font> : 登出
